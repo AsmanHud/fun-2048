@@ -19,6 +19,10 @@ npm run preview   # preview production build
 - `src/config.js` — central physics/visual tuning parameters (exposed via lil-gui dashboard)
 - `public/` — static assets
 
+## Documentation
+
+- `docs/mvp-phase1.md` — Phase 1 MVP design doc: arena shape, spawning, merge mechanics, spatial overflow handling.
+
 ## Conventions
 
 - Important physics constants belong in `src/config.js`, not hardcoded inline, so they stay tunable via the lil-gui dashboard.
