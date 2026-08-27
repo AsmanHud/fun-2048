@@ -24,6 +24,7 @@ gui.add(GameConfig, 'launchVelocityY', -60, -5, 1).name('Launch Force');
 // instantly updates all cylinders currently sitting on the table!
 gui.add(GameConfig, 'cylinderRestitution', 0, 1, 0.01).name('Bounciness').onChange(updateLivePhysics);
 gui.add(GameConfig, 'cylinderFrictionAir', 0, 0.1, 0.001).name('Table Friction').onChange(updateLivePhysics);
+gui.add(GameConfig, 'velocityThresholdSnapToZero', 0, 0.5, 0.01).name('Velocity Snap to Zero');
 
 function updateLivePhysics() {
     gameObjects.forEach(obj => {

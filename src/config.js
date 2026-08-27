@@ -8,7 +8,7 @@ export const GameConfig = {
     cylinderRestitution: 0.1,   // Bounciness (0 = thud, 1 = super bounce)
     cylinderFrictionAir: 0.03,  // Table drag (0 = ice, higher = sticky table)
     densityMultiplier: 0.001,   // Base weight of the cylinders
-    velocityThresholdSnapToZero: 0.5,
+    velocityThresholdSnapToZero: 0.05,
 
     // --- Tiers ---
     tiers: [
