@@ -16,12 +16,8 @@ npm run preview   # preview production build
 - `src/main.js` — entry point, game loop
 - `src/physics.js` — Matter.js world, bodies, merging logic
 - `src/visuals.js` — Three.js scene, rendering
-- `src/config.js` — central physics/visual tuning parameters (exposed via lil-gui dashboard)
+- `src/config.js` — central physics/visual tuning parameters (some exposed via lil-gui dashboard)
 - `public/` — static assets
-
-## Documentation
-
-- `docs/mvp-phase1.md` — Phase 1 MVP design doc: arena shape, spawning, merge mechanics, spatial overflow handling.
 
 ## Conventions
 
