@@ -19,6 +19,16 @@ npm run preview   # preview production build
 - `src/config.js` — central physics/visual tuning parameters (some exposed via lil-gui dashboard)
 - `public/` — static assets
 
+## Linting & formatting
+
+[Biome](https://biomejs.dev/) handles linting and formatting, configured in `biome.json`.
+
+```
+npm run lint     # lint only
+npm run format   # format (writes changes)
+npm run check    # lint + format + import sorting
+```
+
 ## Conventions
 
 - Important physics constants belong in `src/config.js`, not hardcoded inline, so they stay tunable via the lil-gui dashboard.
