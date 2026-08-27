@@ -105,12 +105,10 @@ Matter.Events.on(engine, 'collisionStart', (event) => {
     pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
 
-        // Check if both bodies are game objects, are the exact same tier, and aren't already merging
         if (bodyA.tier !== undefined && bodyB.tier !== undefined &&
             bodyA.tier === bodyB.tier &&
             !bodyA.isMerging && !bodyB.isMerging) {
 
-            // Mark them so they don't double-merge in the same frame
             bodyA.isMerging = true;
             bodyB.isMerging = true;
 
@@ -119,17 +117,25 @@ Matter.Events.on(engine, 'collisionStart', (event) => {
 
             const nextTier = bodyA.tier + 1;
 
-            // The "Zenith Pop": Only spawn the next tier if it exists in our array
             if (nextTier < tiers.length) {
-                // Calculate the exact midpoint of the collision
                 const midX = (bodyA.position.x + bodyB.position.x) / 2;
                 const midY = (bodyA.position.y + bodyB.position.y) / 2;
-                newCylinders.push({ x: midX, y: midY, tier: nextTier });
+
+                // CONSERVATION OF MOMENTUM MATH
+                const velX = ((bodyA.velocity.x * bodyA.mass) + (bodyB.velocity.x * bodyB.mass)) / (bodyA.mass + bodyB.mass);
+                const velY = ((bodyA.velocity.y * bodyA.mass) + (bodyB.velocity.y * bodyB.mass)) / (bodyA.mass + bodyB.mass);
+
+                newCylinders.push({
+                    x: midX,
+                    y: midY,
+                    tier: nextTier,
+                    velX: velX,
+                    velY: velY
+                });
             }
         }
     });
 
-    // Cleanup: Remove old bodies from the visuals and physics engine
     bodiesToRemove.forEach(body => {
         const index = gameObjects.findIndex(obj => obj.body === body);
         if (index !== -1) {
@@ -140,9 +146,11 @@ Matter.Events.on(engine, 'collisionStart', (event) => {
         }
     });
 
-    // Spawn: Add the upgraded cylinders to the board
+    // Spawn and apply inherited velocity
     newCylinders.forEach(data => {
-        createCylinder(data.x, data.y, data.tier);
+        const newObj = createCylinder(data.x, data.y, data.tier);
+        // Apply the inherited momentum to the newly created body
+        Matter.Body.setVelocity(newObj.body, { x: data.velX, y: data.velY });
     });
 });
 
