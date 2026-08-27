@@ -1,16 +1,17 @@
 import Matter from 'matter-js';
+import { GameConfig } from './config.js';
 
 export const engine = Matter.Engine.create();
 engine.gravity.y = 0; // Zero gravity for top-down sliding
 export const world = engine.world;
 
 // Arena Dimensions (1:2 Ratio)
-export const TABLE_WIDTH = 400;
-export const WALL_LENGTH = 400;
-export const TABLE_RADIUS = TABLE_WIDTH / 2; // 200
+export const TABLE_WIDTH = GameConfig.tableWidth;
+export const WALL_LENGTH = GameConfig.wallLength;
+export const TABLE_RADIUS = GameConfig.tableRadius;
 
 // The precise Y-coordinate where the straight walls end and the bottom arc begins
-export const BASELINE_Y = WALL_LENGTH / 2; // 200
+export const BASELINE_Y = GameConfig.baselineY;
 
 export function initPhysicsArena() {
     const options = { isStatic: true, friction: 0.1 };

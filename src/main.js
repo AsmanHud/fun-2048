@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Matter from 'matter-js';
+import { GameConfig } from './config.js';
 import { engine, world, initPhysicsArena, TABLE_WIDTH, BASELINE_Y } from './physics.js';
 import { scene, camera, renderer, initVisualArena } from './visuals.js';
 
@@ -11,14 +12,7 @@ initVisualArena();
 const gameObjects = [];
 let currentCylinder = null;
 
-// A simple 5-tier progression for Phase 1
-const tiers = [
-    { radius: 15, height: 20, color: 0xff4d4d, mass: 1 },    // Tier 0: Red
-    { radius: 18, height: 23, color: 0xffa64d, mass: 1.2 },  // Tier 1: Orange
-    { radius: 21, height: 26, color: 0xffff4d, mass: 1.4 },  // Tier 2: Yellow
-    { radius: 24, height: 29, color: 0x4dff4d, mass: 1.6 },  // Tier 3: Green
-    { radius: 27, height: 32, color: 0x4d4dff, mass: 1.8 }   // Tier 4: Blue
-];
+const tiers = GameConfig.tiers;
 
 // 3. The Object Factory (Creates in 3D and 2D simultaneously)
 function createCylinder(x, y, tierIndex, isPlayer = false) {
@@ -36,9 +30,9 @@ function createCylinder(x, y, tierIndex, isPlayer = false) {
 
     // -- MATTER.JS (Physics) --
     const body = Matter.Bodies.circle(x, y, tier.radius, {
-        restitution: 0.1,     // Bounciness
-        frictionAir: 0.03,    // Table drag to slow it down
-        density: 0.001 * tier.mass
+        restitution: GameConfig.cylinderRestitution,     // Bounciness
+        frictionAir: GameConfig.cylinderFrictionAir,    // Table drag to slow it down
+        density: GameConfig.densityMultiplier * tier.mass
     });
 
     body.tier = tierIndex;
@@ -87,7 +81,7 @@ window.addEventListener('mousemove', (e) => {
 window.addEventListener('mousedown', () => {
     if (!currentCylinder || !currentCylinder.isPlayer) return;
 
-    Matter.Body.setVelocity(currentCylinder.body, { x: 0, y: -25 });
+    Matter.Body.setVelocity(currentCylinder.body, { x: 0, y: GameConfig.launchVelocityY });
 
     currentCylinder.isPlayer = false; // Detach from mouse
     currentCylinder = null;
