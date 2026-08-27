@@ -11,10 +11,13 @@ initVisualArena();
 const gameObjects = [];
 let currentCylinder = null;
 
-// Temporary basic tier data (Phase 1 just uses the smallest one)
+// A simple 5-tier progression for Phase 1
 const tiers = [
-    { radius: 15, height: 20, color: 0xff4d4d, mass: 1 },
-    { radius: 22, height: 25, color: 0xffa64d, mass: 1.5 }
+    { radius: 15, height: 20, color: 0xff4d4d, mass: 1 },    // Tier 0: Red
+    { radius: 18, height: 23, color: 0xffa64d, mass: 1.2 },  // Tier 1: Orange
+    { radius: 21, height: 26, color: 0xffff4d, mass: 1.4 },  // Tier 2: Yellow
+    { radius: 24, height: 29, color: 0x4dff4d, mass: 1.6 },  // Tier 3: Green
+    { radius: 27, height: 32, color: 0x4d4dff, mass: 1.8 }   // Tier 4: Blue
 ];
 
 // 3. The Object Factory (Creates in 3D and 2D simultaneously)
@@ -93,14 +96,64 @@ window.addEventListener('mousedown', () => {
     setTimeout(spawnPlayerCylinder, 500);
 });
 
-// 5. Window Resize Handler
+// 5. The Merge Mechanic (Collision Listener)
+Matter.Events.on(engine, 'collisionStart', (event) => {
+    const pairs = event.pairs;
+    const bodiesToRemove = new Set();
+    const newCylinders = [];
+
+    pairs.forEach(pair => {
+        const { bodyA, bodyB } = pair;
+
+        // Check if both bodies are game objects, are the exact same tier, and aren't already merging
+        if (bodyA.tier !== undefined && bodyB.tier !== undefined &&
+            bodyA.tier === bodyB.tier &&
+            !bodyA.isMerging && !bodyB.isMerging) {
+
+            // Mark them so they don't double-merge in the same frame
+            bodyA.isMerging = true;
+            bodyB.isMerging = true;
+
+            bodiesToRemove.add(bodyA);
+            bodiesToRemove.add(bodyB);
+
+            const nextTier = bodyA.tier + 1;
+
+            // The "Zenith Pop": Only spawn the next tier if it exists in our array
+            if (nextTier < tiers.length) {
+                // Calculate the exact midpoint of the collision
+                const midX = (bodyA.position.x + bodyB.position.x) / 2;
+                const midY = (bodyA.position.y + bodyB.position.y) / 2;
+                newCylinders.push({ x: midX, y: midY, tier: nextTier });
+            }
+        }
+    });
+
+    // Cleanup: Remove old bodies from the visuals and physics engine
+    bodiesToRemove.forEach(body => {
+        const index = gameObjects.findIndex(obj => obj.body === body);
+        if (index !== -1) {
+            const obj = gameObjects[index];
+            scene.remove(obj.mesh);
+            Matter.Composite.remove(world, obj.body);
+            gameObjects.splice(index, 1);
+        }
+    });
+
+    // Spawn: Add the upgraded cylinders to the board
+    newCylinders.forEach(data => {
+        createCylinder(data.x, data.y, data.tier);
+    });
+});
+
+// 6. Window Resize Handler
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// 6. The Master Sync Loop
+// 7. The Master Sync Loop
 function animate() {
     requestAnimationFrame(animate);
 
