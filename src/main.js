@@ -33,7 +33,7 @@ function createCylinder(x, y, tierIndex, isPlayer = false) {
 
     // -- MATTER.JS (Physics) --
     const body = Matter.Bodies.circle(x, y, tier.radius, {
-        restitution: 0.5,     // Bounciness
+        restitution: 0.1,     // Bounciness
         frictionAir: 0.03,    // Table drag to slow it down
         density: 0.001 * tier.mass
     });

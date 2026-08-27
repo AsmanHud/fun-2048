@@ -13,7 +13,7 @@ export const TABLE_RADIUS = TABLE_WIDTH / 2; // 200
 export const BASELINE_Y = WALL_LENGTH / 2; // 200
 
 export function initPhysicsArena() {
-    const options = { isStatic: true, friction: 0.1, restitution: 0.4 }; // Bouncy, smooth walls
+    const options = { isStatic: true, friction: 0.1 };
     const bounds = [];
 
     // 1. Straight Vertical Walls
