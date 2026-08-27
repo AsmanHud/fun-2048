@@ -1,3 +1,4 @@
+import GUI from 'lil-gui';
 import * as THREE from 'three';
 import Matter from 'matter-js';
 import { GameConfig } from './config.js';
@@ -13,6 +14,23 @@ const gameObjects = [];
 let currentCylinder = null;
 
 const tiers = GameConfig.tiers;
+
+// --- Setup Live Dashboard ---
+const gui = new GUI({ title: 'Physics Sandbox' });
+
+gui.add(GameConfig, 'launchVelocityY', -60, -5, 1).name('Launch Force');
+
+// For these properties, we add an `onChange` event so that tweaking the slider
+// instantly updates all cylinders currently sitting on the table!
+gui.add(GameConfig, 'cylinderRestitution', 0, 1, 0.01).name('Bounciness').onChange(updateLivePhysics);
+gui.add(GameConfig, 'cylinderFrictionAir', 0, 0.1, 0.001).name('Table Friction').onChange(updateLivePhysics);
+
+function updateLivePhysics() {
+    gameObjects.forEach(obj => {
+        Matter.Body.set(obj.body, 'restitution', GameConfig.cylinderRestitution);
+        Matter.Body.set(obj.body, 'frictionAir', GameConfig.cylinderFrictionAir);
+    });
+}
 
 // 3. The Object Factory (Creates in 3D and 2D simultaneously)
 function createCylinder(x, y, tierIndex, isPlayer = false) {
