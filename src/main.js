@@ -177,12 +177,19 @@ window.addEventListener('resize', () => {
 function animate() {
     requestAnimationFrame(animate);
 
-    // Step the physics engine (16.6ms per frame = 60fps)
     Matter.Engine.update(engine, 1000 / 60);
 
-    // Synchronize 3D visuals to match the 2D physics math
     gameObjects.forEach(obj => {
-        // Map 2D X/Y to 3D X/Z
+        // Calculate the total speed (magnitude of the velocity vector)
+        const speed = Math.sqrt(obj.body.velocity.x ** 2 + obj.body.velocity.y ** 2);
+
+        if (speed > 0 && speed < GameConfig.velocityThresholdSnapToZero && !obj.body.isStatic) {
+            // Kill the velocity and angular velocity (spin)
+            Matter.Body.setVelocity(obj.body, { x: 0, y: 0 });
+            Matter.Body.setAngularVelocity(obj.body, 0);
+        }
+
+        // Sync Visuals
         obj.mesh.position.x = obj.body.position.x;
         obj.mesh.position.z = obj.body.position.y;
     });
