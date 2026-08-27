@@ -84,8 +84,7 @@ window.addEventListener('mousemove', (e) => {
 window.addEventListener('mousedown', () => {
     if (!currentCylinder || !currentCylinder.isPlayer) return;
 
-    // Shoot! Apply strong upward velocity in Matter.js (Negative Y)
-    Matter.Body.setVelocity(currentCylinder.body, { x: 0, y: -45 });
+    Matter.Body.setVelocity(currentCylinder.body, { x: 0, y: -25 });
 
     currentCylinder.isPlayer = false; // Detach from mouse
     currentCylinder = null;
