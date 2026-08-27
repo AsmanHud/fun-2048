@@ -14,7 +14,7 @@ export const TABLE_RADIUS = GameConfig.tableRadius;
 export const BASELINE_Y = GameConfig.baselineY;
 
 export function initPhysicsArena() {
-    const options = { isStatic: true, friction: 0.1 };
+    const options = { isStatic: true };
     const bounds = [];
 
     // 1. Straight Vertical Walls
