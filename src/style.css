@@ -1,4 +1,38 @@
 body {
 	margin: 0;
 	overflow: hidden;
+	font-family: sans-serif;
+}
+
+#ui-layer {
+	position: absolute;
+	top: 20px;
+	width: 100%;
+	pointer-events: none; /* Lets clicks pass through to the 3D canvas */
+	display: flex;
+	justify-content: center;
+	z-index: 10;
+}
+
+#ticket {
+	background: white;
+	padding: 15px 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	text-align: center;
+	border-top: 5px solid #ff4d4d;
+}
+
+.ticket-header {
+	font-size: 14px;
+	color: #888;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 5px;
+}
+
+#order-target {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
 }

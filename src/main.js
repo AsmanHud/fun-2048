@@ -18,6 +18,9 @@ initVisualArena();
 // 2. Game State & Data
 const gameObjects = [];
 let currentCylinder = null;
+let currentOrderTier = 1;
+const orderTargetUI = document.getElementById("order-target");
+const ticketUI = document.getElementById("ticket");
 
 const tiers = GameConfig.tiers;
 
@@ -45,6 +48,21 @@ function updateLivePhysics() {
 		Matter.Body.set(obj.body, "restitution", GameConfig.cylinderRestitution);
 		Matter.Body.set(obj.body, "frictionAir", GameConfig.cylinderFrictionAir);
 	});
+}
+
+function generateNewOrder() {
+	// Randomly pick a tier between 1 and 4 (Orange, Yellow, Green, Blue)
+	currentOrderTier = Math.floor(Math.random() * (tiers.length - 1)) + 1;
+
+	// Define some names for our UI based on the colors in our config
+	const tierNames = ["Red", "Orange", "Yellow", "Green", "Blue"];
+
+	orderTargetUI.innerText = `Build a ${tierNames[currentOrderTier]} Cylinder`;
+
+	// Match the ticket border color to the requested tier
+	const hexColor =
+		"#" + tiers[currentOrderTier].color.toString(16).padStart(6, "0");
+	ticketUI.style.borderTopColor = hexColor;
 }
 
 // 3. The Object Factory (Creates in 3D and 2D simultaneously)
@@ -159,21 +177,37 @@ Matter.Events.on(engine, "collisionStart", (event) => {
 				const midX = (bodyA.position.x + bodyB.position.x) / 2;
 				const midY = (bodyA.position.y + bodyB.position.y) / 2;
 
-				// CONSERVATION OF MOMENTUM MATH
-				const velX =
-					(bodyA.velocity.x * bodyA.mass + bodyB.velocity.x * bodyB.mass) /
-					(bodyA.mass + bodyB.mass);
-				const velY =
-					(bodyA.velocity.y * bodyA.mass + bodyB.velocity.y * bodyB.mass) /
-					(bodyA.mass + bodyB.mass);
+				// --- NEW: Check if this merge fulfills the contract! ---
+				if (nextTier === currentOrderTier) {
+					console.log("ORDER FULFILLED!");
 
-				newCylinders.push({
-					x: midX,
-					y: midY,
-					tier: nextTier,
-					velX: velX,
-					velY: velY,
-				});
+					// Flash the UI green for feedback
+					ticketUI.style.backgroundColor = "#e6ffe6";
+					setTimeout(() => (ticketUI.style.backgroundColor = "white"), 300);
+
+					// Generate a new order immediately
+					generateNewOrder();
+
+					// CRITICAL: We purposely DO NOT push this to newCylinders.
+					// By not spawning it, we effectively "remove" it from the board,
+					// giving the player that massive relief of cleared space!
+				} else {
+					// It's not the order, so spawn the next tier normally
+					const velX =
+						(bodyA.velocity.x * bodyA.mass + bodyB.velocity.x * bodyB.mass) /
+						(bodyA.mass + bodyB.mass);
+					const velY =
+						(bodyA.velocity.y * bodyA.mass + bodyB.velocity.y * bodyB.mass) /
+						(bodyA.mass + bodyB.mass);
+
+					newCylinders.push({
+						x: midX,
+						y: midY,
+						tier: nextTier,
+						velX: velX,
+						velY: velY,
+					});
+				}
 			}
 		}
 	});
@@ -235,4 +269,5 @@ function animate() {
 
 // Start the game!
 spawnPlayerCylinder();
+generateNewOrder();
 animate();
