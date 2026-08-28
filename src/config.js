@@ -16,6 +16,14 @@ export const GameConfig = {
 	// ones produced by the first couple of merges.
 	minContractTier: 5,
 
+	// --- Spawning ---
+	// Relative odds for which tier the player's next cylinder will be.
+	// Index i is the weight for tier i; must cover exactly the tiers below
+	// minContractTier (no overlap with contract-eligible tiers). Weighted
+	// toward the lowest tier, same shape as classic 2048's "mostly 2,
+	// sometimes 4" — not reactive to board state, just a fixed distribution.
+	spawnWeights: [40, 25, 15, 12, 8],
+
 	// --- Tiers ---
 	tiers: [
 		{ radius: 15, height: 20, color: 0xff4d4d, mass: 1 },

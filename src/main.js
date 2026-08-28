@@ -128,9 +128,22 @@ function createCylinder(x, y, tierIndex, isPlayer = false) {
 	return gameObject;
 }
 
-// Spawn the first active cylinder on the baseline
+// Pick a spawn tier using the fixed odds in GameConfig.spawnWeights (not
+// reactive to board state — just a weighted die roll toward low tiers).
+function pickSpawnTier() {
+	const weights = GameConfig.spawnWeights;
+	const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+	let roll = Math.random() * totalWeight;
+	for (let i = 0; i < weights.length; i++) {
+		roll -= weights[i];
+		if (roll < 0) return i;
+	}
+	return weights.length - 1;
+}
+
+// Spawn the next active cylinder on the baseline
 function spawnPlayerCylinder() {
-	currentCylinder = createCylinder(0, BASELINE_Y, 0, true);
+	currentCylinder = createCylinder(0, BASELINE_Y, pickSpawnTier(), true);
 }
 
 // 4. Input & Interaction (Aiming and Shooting)
