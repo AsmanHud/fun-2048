@@ -10,6 +10,12 @@ export const GameConfig = {
 	densityMultiplier: 0.001, // Base weight of the cylinders
 	velocityThresholdSnapToZero: 0.05,
 
+	// --- Contracts ---
+	// Lowest tier index that can be requested as a contract target. Keeps
+	// contracts focused on tiers the player has to work to build, instead of
+	// ones produced by the first couple of merges.
+	minContractTier: 5,
+
 	// --- Tiers ---
 	tiers: [
 		{ radius: 15, height: 20, color: 0xff4d4d, mass: 1 },
@@ -17,6 +23,11 @@ export const GameConfig = {
 		{ radius: 21, height: 26, color: 0xffff4d, mass: 1.4 },
 		{ radius: 24, height: 29, color: 0x4dff4d, mass: 1.6 },
 		{ radius: 27, height: 32, color: 0x4d4dff, mass: 1.8 },
+		{ radius: 30, height: 35, color: 0xa64dff, mass: 2.0 },
+		{ radius: 33, height: 38, color: 0xff4dcf, mass: 2.2 },
+		{ radius: 36, height: 41, color: 0x4dfff2, mass: 2.4 },
+		{ radius: 39, height: 44, color: 0xffd700, mass: 2.6 },
+		{ radius: 42, height: 47, color: 0x1a1a1a, mass: 2.8 },
 	],
 };
 

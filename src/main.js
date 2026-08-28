@@ -23,6 +23,18 @@ const ticketUI = document.getElementById("ticket");
 
 const tiers = GameConfig.tiers;
 
+// --- Tier Progression Hint (purely decorative, shows the full merge chain) ---
+const tierProgressUI = document.getElementById("tier-progress");
+tiers.forEach((tier, i) => {
+	const swatch = document.createElement("div");
+	swatch.className = "tier-progress-swatch";
+	const size = 10 + i * 3;
+	swatch.style.width = `${size}px`;
+	swatch.style.height = `${size}px`;
+	swatch.style.backgroundColor = `#${tier.color.toString(16).padStart(6, "0")}`;
+	tierProgressUI.appendChild(swatch);
+});
+
 // --- Setup Live Dashboard (dev only — dynamically imported so lil-gui
 // never ends up in the production bundle) ---
 if (import.meta.env.DEV) {
@@ -53,12 +65,26 @@ if (import.meta.env.DEV) {
 		.name("Velocity Snap to Zero");
 }
 
-function generateNewOrder() {
-	// Randomly pick a tier between 1 and 4 (Orange, Yellow, Green, Blue)
-	currentOrderTier = Math.floor(Math.random() * (tiers.length - 1)) + 1;
+// Names for our UI based on the colors in our config
+const tierNames = [
+	"Red",
+	"Orange",
+	"Yellow",
+	"Green",
+	"Blue",
+	"Purple",
+	"Pink",
+	"Cyan",
+	"Gold",
+	"Black",
+];
 
-	// Define some names for our UI based on the colors in our config
-	const tierNames = ["Red", "Orange", "Yellow", "Green", "Blue"];
+function generateNewOrder() {
+	// Randomly pick a tier at or above the contract floor, up to the
+	// highest tier.
+	const minTier = GameConfig.minContractTier;
+	currentOrderTier =
+		minTier + Math.floor(Math.random() * (tiers.length - minTier));
 
 	orderTargetUI.innerText = `Build a ${tierNames[currentOrderTier]} Cylinder`;
 

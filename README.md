@@ -25,7 +25,9 @@ This is an early-access build, not a finished game:
 - **No fail state.** There's no way to lose yet; the board never resets.
 - **No scoring or currency.** Fulfilling a contract clears it but doesn't
   track any score.
-- **Only 5 tiers.** No late-game progression yet.
+- **Flat spawn/progression curve.** All 10 tiers exist, but the player's
+  spawn cylinder is always tier 0 and contract targets are picked with flat
+  random odds — no weighted/late-game-aware spawner yet.
 - **Desktop only.** Mouse input only — no touch/mobile support.
 - **Contracts system is still a work in progress** and may change shape.
 
