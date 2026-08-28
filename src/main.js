@@ -1,4 +1,3 @@
-import GUI from "lil-gui";
 import Matter from "matter-js";
 import * as THREE from "three";
 import { GameConfig } from "./config.js";
@@ -24,30 +23,34 @@ const ticketUI = document.getElementById("ticket");
 
 const tiers = GameConfig.tiers;
 
-// --- Setup Live Dashboard ---
-const gui = new GUI({ title: "Physics Sandbox" });
+// --- Setup Live Dashboard (dev only — dynamically imported so lil-gui
+// never ends up in the production bundle) ---
+if (import.meta.env.DEV) {
+	const { default: GUI } = await import("lil-gui");
+	const gui = new GUI({ title: "Physics Sandbox" });
 
-gui.add(GameConfig, "launchVelocityY", -60, -5, 1).name("Launch Force");
+	const updateLivePhysics = () => {
+		gameObjects.forEach((obj) => {
+			Matter.Body.set(obj.body, "restitution", GameConfig.cylinderRestitution);
+			Matter.Body.set(obj.body, "frictionAir", GameConfig.cylinderFrictionAir);
+		});
+	};
 
-// For these properties, we add an `onChange` event so that tweaking the slider
-// instantly updates all cylinders currently sitting on the table!
-gui
-	.add(GameConfig, "cylinderRestitution", 0, 1, 0.01)
-	.name("Bounciness")
-	.onChange(updateLivePhysics);
-gui
-	.add(GameConfig, "cylinderFrictionAir", 0, 0.1, 0.001)
-	.name("Table Friction")
-	.onChange(updateLivePhysics);
-gui
-	.add(GameConfig, "velocityThresholdSnapToZero", 0, 0.5, 0.01)
-	.name("Velocity Snap to Zero");
+	gui.add(GameConfig, "launchVelocityY", -60, -5, 1).name("Launch Force");
 
-function updateLivePhysics() {
-	gameObjects.forEach((obj) => {
-		Matter.Body.set(obj.body, "restitution", GameConfig.cylinderRestitution);
-		Matter.Body.set(obj.body, "frictionAir", GameConfig.cylinderFrictionAir);
-	});
+	// For these properties, we add an `onChange` event so that tweaking the slider
+	// instantly updates all cylinders currently sitting on the table!
+	gui
+		.add(GameConfig, "cylinderRestitution", 0, 1, 0.01)
+		.name("Bounciness")
+		.onChange(updateLivePhysics);
+	gui
+		.add(GameConfig, "cylinderFrictionAir", 0, 0.1, 0.001)
+		.name("Table Friction")
+		.onChange(updateLivePhysics);
+	gui
+		.add(GameConfig, "velocityThresholdSnapToZero", 0, 0.5, 0.01)
+		.name("Velocity Snap to Zero");
 }
 
 function generateNewOrder() {
@@ -60,8 +63,7 @@ function generateNewOrder() {
 	orderTargetUI.innerText = `Build a ${tierNames[currentOrderTier]} Cylinder`;
 
 	// Match the ticket border color to the requested tier
-	const hexColor =
-		"#" + tiers[currentOrderTier].color.toString(16).padStart(6, "0");
+	const hexColor = `#${tiers[currentOrderTier].color.toString(16).padStart(6, "0")}`;
 	ticketUI.style.borderTopColor = hexColor;
 }
 
@@ -179,8 +181,6 @@ Matter.Events.on(engine, "collisionStart", (event) => {
 
 				// --- NEW: Check if this merge fulfills the contract! ---
 				if (nextTier === currentOrderTier) {
-					console.log("ORDER FULFILLED!");
-
 					// Flash the UI green for feedback
 					ticketUI.style.backgroundColor = "#e6ffe6";
 					setTimeout(() => (ticketUI.style.backgroundColor = "white"), 300);

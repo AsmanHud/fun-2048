@@ -13,8 +13,8 @@ npm run preview   # preview production build
 
 ## Project layout
 
-- `src/main.js` — entry point, game loop
-- `src/physics.js` — Matter.js world, bodies, merging logic
+- `src/main.js` — entry point, game loop, merging logic
+- `src/physics.js` — Matter.js world, bodies, arena boundary
 - `src/visuals.js` — Three.js scene, rendering
 - `src/config.js` — central physics/visual tuning parameters (some exposed via lil-gui dashboard)
 - `public/` — static assets
