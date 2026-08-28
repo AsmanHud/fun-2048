@@ -95,7 +95,7 @@ const tablePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const targetPosition = new THREE.Vector3();
 
 window.addEventListener("mousemove", (e) => {
-	if (!currentCylinder || !currentCylinder.isPlayer) return;
+	if (!currentCylinder?.isPlayer) return;
 
 	// Convert screen pixel to 3D ray
 	mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -107,7 +107,7 @@ window.addEventListener("mousemove", (e) => {
 
 	// Constrain the X movement so it doesn't clip through the side walls
 	const max_X = TABLE_WIDTH / 2 - tiers[0].radius;
-	let clampedX = Math.max(-max_X, Math.min(max_X, targetPosition.x));
+	const clampedX = Math.max(-max_X, Math.min(max_X, targetPosition.x));
 
 	// Instantly teleport the physics body horizontally along the baseline
 	Matter.Body.setPosition(currentCylinder.body, {
@@ -117,7 +117,7 @@ window.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("mousedown", () => {
-	if (!currentCylinder || !currentCylinder.isPlayer) return;
+	if (!currentCylinder?.isPlayer) return;
 
 	Matter.Body.setVelocity(currentCylinder.body, {
 		x: 0,
