@@ -1,15 +1,15 @@
 import GUI from "lil-gui";
-import * as THREE from "three";
 import Matter from "matter-js";
+import * as THREE from "three";
 import { GameConfig } from "./config.js";
 import {
+	BASELINE_Y,
 	engine,
-	world,
 	initPhysicsArena,
 	TABLE_WIDTH,
-	BASELINE_Y,
+	world,
 } from "./physics.js";
-import { scene, camera, renderer, initVisualArena } from "./visuals.js";
+import { camera, initVisualArena, renderer, scene } from "./visuals.js";
 
 // 1. Initialize the board
 initPhysicsArena();

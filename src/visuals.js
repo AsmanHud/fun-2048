@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { TABLE_WIDTH, WALL_LENGTH, TABLE_RADIUS } from "./physics.js";
+import { TABLE_RADIUS, TABLE_WIDTH, WALL_LENGTH } from "./physics.js";
 
 export const scene = new THREE.Scene();
 scene.background = new THREE.Color("#e0e8f0"); // Outer environment color
