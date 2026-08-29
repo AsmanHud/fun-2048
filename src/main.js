@@ -153,15 +153,15 @@ const mouse = new THREE.Vector2();
 const tablePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const targetPosition = new THREE.Vector3();
 
-window.addEventListener("mousemove", (e) => {
+function aimAt(clientX, clientY) {
 	if (!currentCylinder?.isPlayer) return;
 
 	// Convert screen pixel to 3D ray
-	mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+	mouse.x = (clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(clientY / window.innerHeight) * 2 + 1;
 	raycaster.setFromCamera(mouse, camera);
 
-	// Find exactly where the mouse ray hits the table plane
+	// Find exactly where the pointer ray hits the table plane
 	raycaster.ray.intersectPlane(tablePlane, targetPosition);
 
 	// Constrain the X movement so it doesn't clip through the side walls
@@ -173,9 +173,9 @@ window.addEventListener("mousemove", (e) => {
 		x: clampedX,
 		y: BASELINE_Y,
 	});
-});
+}
 
-window.addEventListener("mousedown", () => {
+function launchCurrentCylinder() {
 	if (!currentCylinder?.isPlayer) return;
 
 	Matter.Body.setVelocity(currentCylinder.body, {
@@ -183,12 +183,55 @@ window.addEventListener("mousedown", () => {
 		y: GameConfig.launchVelocityY,
 	});
 
-	currentCylinder.isPlayer = false; // Detach from mouse
+	currentCylinder.isPlayer = false; // Detach from pointer
 	currentCylinder = null;
 
 	// Spawn the next one half a second later
 	setTimeout(spawnPlayerCylinder, 500);
+}
+
+window.addEventListener("mousemove", (e) => {
+	aimAt(e.clientX, e.clientY);
 });
+
+window.addEventListener("mousedown", () => {
+	launchCurrentCylinder();
+});
+
+// Touch controls mirror the mouse controls above: touch-down/move follows
+// the finger, touch-release launches toward the last touched position.
+// preventDefault stops the page from scrolling/zooming while aiming.
+window.addEventListener(
+	"touchstart",
+	(e) => {
+		if (!currentCylinder?.isPlayer) return;
+		e.preventDefault();
+		const touch = e.changedTouches[0];
+		aimAt(touch.clientX, touch.clientY);
+	},
+	{ passive: false },
+);
+
+window.addEventListener(
+	"touchmove",
+	(e) => {
+		if (!currentCylinder?.isPlayer) return;
+		e.preventDefault();
+		const touch = e.changedTouches[0];
+		aimAt(touch.clientX, touch.clientY);
+	},
+	{ passive: false },
+);
+
+window.addEventListener(
+	"touchend",
+	(e) => {
+		if (!currentCylinder?.isPlayer) return;
+		e.preventDefault();
+		launchCurrentCylinder();
+	},
+	{ passive: false },
+);
 
 // 5. The Merge Mechanic (Collision Listener)
 Matter.Events.on(engine, "collisionStart", (event) => {
