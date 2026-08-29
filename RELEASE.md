@@ -70,10 +70,14 @@ butler login
 npm run deploy
 ```
 
-This runs `vite build` then `butler push dist asmanhud/fun-2048:web`,
-uploading the contents of `dist/` as the `web` channel. Butler diffs
-against the previous build and only uploads changed data, and itch.io
-keeps a version history of every push automatically.
+This runs `scripts/deploy.sh`, which refuses to deploy unless you're on
+`main`, the working tree is clean, and local `main` is fully in sync with
+`origin/main` — so you can't accidentally ship a branch, WIP changes, or
+stale local commits. Once those checks pass it runs `vite build` then
+`butler push dist asmanhud/fun-2048:web`, uploading the contents of
+`dist/` as the `web` channel. Butler diffs against the previous build and
+only uploads changed data, and itch.io keeps a version history of every
+push automatically.
 
 ### CI automation (manual trigger)
 
