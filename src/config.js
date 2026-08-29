@@ -1,4 +1,8 @@
 export const GameConfig = {
+	// --- Dev Tools ---
+	// Toggle the lil-gui live dashboard (dev builds only; never bundled in production).
+	enableDebugGui: false,
+
 	// --- Arena Dimensions ---
 	tableWidth: 400,
 	wallLength: 400,

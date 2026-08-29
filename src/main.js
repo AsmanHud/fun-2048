@@ -37,7 +37,7 @@ tiers.forEach((tier, i) => {
 
 // --- Setup Live Dashboard (dev only — dynamically imported so lil-gui
 // never ends up in the production bundle) ---
-if (import.meta.env.DEV) {
+if (import.meta.env.DEV && GameConfig.enableDebugGui) {
 	const { default: GUI } = await import("lil-gui");
 	const gui = new GUI({ title: "Physics Sandbox" });
 
