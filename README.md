@@ -25,11 +25,17 @@ This is an early-access build, not a finished game:
 - **No fail state.** There's no way to lose yet; the board never resets.
 - **No scoring or currency.** Fulfilling a contract clears it but doesn't
   track any score.
-- **Flat spawn/progression curve.** All 10 tiers exist, but the player's
-  spawn cylinder is always tier 0 and contract targets are picked with flat
-  random odds — no weighted/late-game-aware spawner yet.
+- **Flat spawn/progression curve.** The spawner now picks from a range of
+  tiers instead of always tier 0, but the odds are fixed — the spawn isn't
+  decided dynamically based on the current board state (e.g. what's already
+  on the board or how close the player is to a contract), which is a
+  potential improvement worth exploring.
 - **Desktop only.** Mouse input only — no touch/mobile support.
 - **Contracts system is still a work in progress** and may change shape.
+- **The game environment itself is the real limitation.** The current merge
+  mechanic is meant to become the core engine that the lore and game
+  progression are built around, not just a standalone puzzle loop — most of
+  what's here is scaffolding for that.
 
 Feedback on what's fun (or isn't) is exactly what this build is for.
 
