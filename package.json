@@ -10,7 +10,8 @@
 		"lint": "biome lint .",
 		"format": "biome format --write .",
 		"check": "biome check .",
-		"wcheck": "biome check --write ."
+		"wcheck": "biome check --write .",
+		"deploy": "vite build && butler push dist asmanhud/fun-2048:web"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.10",

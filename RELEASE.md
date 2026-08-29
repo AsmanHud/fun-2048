@@ -48,9 +48,48 @@ Open the printed local URL and confirm the game loads and plays with no
 console errors — this is the closest local approximation to how itch.io
 will serve it.
 
-## Future: automated deploys
+## Automated deploys with Butler
 
-itch.io provides a CLI, [`butler`](https://itch.io/docs/butler/), for
-scripted uploads (`butler push dist <user>/<game>:web`). This isn't wired
-into CI yet since it needs an itch.io API key as a secret — worth adding
-once releases become frequent enough to justify it.
+itch.io's CLI, [`butler`](https://itch.io/docs/butler/), can push builds
+directly without manual zipping/uploading.
+
+### One-time setup
+
+```bash
+# Install (Linux example; see butler docs for macOS/Windows)
+curl -sL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+unzip -o butler.zip -d ~/bin && chmod +x ~/bin/butler
+
+# Authenticate (opens a browser login, stores credentials locally)
+butler login
+```
+
+### Push a build
+
+```bash
+npm run deploy
+```
+
+This runs `vite build` then `butler push dist asmanhud/fun-2048:web`,
+uploading the contents of `dist/` as the `web` channel. Butler diffs
+against the previous build and only uploads changed data, and itch.io
+keeps a version history of every push automatically.
+
+### CI automation (manual trigger)
+
+`.github/workflows/deploy.yml` builds and pushes to itch.io, but only
+runs when manually triggered — nothing deploys automatically on push, so
+there's no risk of an in-progress commit going live.
+
+One-time setup:
+
+1. Get an API key from https://itch.io/user/settings/api-keys.
+2. Add it as a repo secret named `BUTLER_API_KEY` (Settings → Secrets and
+   variables → Actions → New repository secret).
+
+To deploy: go to the repo's Actions tab → "Deploy to itch.io" → "Run
+workflow", or via CLI:
+
+```bash
+gh workflow run deploy.yml
+```
